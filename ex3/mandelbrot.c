@@ -1,5 +1,4 @@
 #include <complex.h>
-#include <math.h>
 #include "mandelbrot.h"
 
 #define M 2.0 // Constant

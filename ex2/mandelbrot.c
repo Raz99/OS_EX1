@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <complex.h>
-#include <math.h>
 
 #define M 2.0 // Constant
 #define DEFAULT_N 1000 // Default number for N
