@@ -16,7 +16,6 @@ int main() {
         return 1;
     }
 
-
     while(real != 0 && imag != 0) {
         complex double c = real + imag * I;
 
