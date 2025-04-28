@@ -2,6 +2,8 @@ CC = gcc
 CFLAGS = -g -Wall
 TARGET = mandelbrot
 
+.PHONY: all clean
+
 all: $(TARGET)
 
 $(TARGET): mandelbrot.o
