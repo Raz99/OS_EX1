@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "complex": "cpp",
-        "mandelbrot.h": "c"
+        "mandelbrot.h": "c",
+        "limits.h": "c"
     }
 }
