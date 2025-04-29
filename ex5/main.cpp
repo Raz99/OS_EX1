@@ -15,6 +15,7 @@ vector<int> generate_random_array(int n, unsigned int seed) {
     return array;
 }
 
+// Algorithm 1: O(n^3)
 int algorithm1(const vector<int>& array) {
     int best = 0;
     for (int a = 0; a < array.size(); a++) {
@@ -29,6 +30,7 @@ int algorithm1(const vector<int>& array) {
     return best;
 }
 
+// Algorithm 2: O(n^2)
 int algorithm2(const vector<int>& array) {
     int best = 0;
     for (int a = 0; a < array.size(); a++) {
@@ -41,6 +43,7 @@ int algorithm2(const vector<int>& array) {
     return best;
 }
 
+// Algorithm 3: O(n) (Kadane's algorithm)
 int algorithm3(const vector<int>& array) {
     int best = 0, sum = 0;
     for (int k = 0; k < array.size(); k++) {
