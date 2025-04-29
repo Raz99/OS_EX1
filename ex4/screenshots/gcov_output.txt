@@ -1,0 +1,180 @@
+razco@RAZ-COHEN:~/Uni/OpSys/A1/OS_EX1/ex4$ cat dijkstra.c.gcov
+        -:    0:Source:dijkstra.c
+        -:    0:Graph:dijkstra.gcno
+        -:    0:Data:dijkstra.gcda
+        -:    0:Runs:1
+        -:    1:// C Program to Implement Shortest Path Algorithm
+        -:    2:// From GeeksForGeeks: https://www.geeksforgeeks.org/shortest-path-algorithm-in-c/#implementation-of-dijkstras-algorithm-in-c
+        -:    3:#include <limits.h>
+        -:    4:#include <stdio.h>
+        -:    5:#include <stdbool.h>
+        -:    6:#include <stdlib.h>
+        -:    7:
+        -:    8:// Function to find the vertex with the minimum distance
+        -:    9:// value from the set of vertices not yet included in the
+        -:   10:// shortest path tree
+        3:   11:int findminDistance(int dist[], int included[], int V) {
+        3:   12:    int min = INT_MAX, min_index;
+        -:   13:
+        -:   14:    // Traverse all vertices to find the vertex with the
+        -:   15:    // minimum distance value
+       15:   16:    for (int v = 0; v < V; v++) {
+       12:   17:        if (included[v] == 0 && dist[v] <= min) {
+        8:   18:            min = dist[v];
+        8:   19:            min_index = v;
+        -:   20:        }
+        -:   21:    }
+        3:   22:    return min_index;
+        -:   23:}
+        -:   24:
+        -:   25:// Function to print the constructed distance array
+        1:   26:void printSolution(int dist[], int V) {
+        1:   27:    printf("Vertex \t Distance from Source\n");
+        5:   28:    for (int i = 0; i < V; i++) {
+        4:   29:        if (dist[i] == INT_MAX) {
+        1:   30:            printf("%d \t\t INF\n", i);
+        -:   31:        } else {
+        3:   32:            printf("%d \t\t %d\n", i, dist[i]);
+        -:   33:        }
+        -:   34:    }
+        1:   35:}
+        -:   36:
+        -:   37:// Function that implements Dijkstra's algorithm
+        1:   38:void DijkstrasAlgo(int **graph, int src, int V) {
+        -:   39:    // Array to store the minimum distance from source node
+        -:   40:    // to the current node
+        1:   41:    int dist[V];
+        -:   42:    // Array to keep track of included nodes
+        1:   43:    int included[V];
+        -:   44:
+        -:   45:    // Initialize all distances as INFINITE and included as
+        -:   46:    // false
+        5:   47:    for (int i = 0; i < V; i++) {
+        4:   48:        dist[i] = INT_MAX;
+        4:   49:        included[i] = 0;
+        -:   50:    }
+        -:   51:
+        -:   52:    // Distance of source vertex from itself is always 0
+        1:   53:    dist[src] = 0;
+        -:   54:
+        -:   55:    // Find the shortest path for all vertices
+        4:   56:    for (int count = 0; count < V - 1; count++) {
+        -:   57:        // Pick the minimum distance vertex from the set of
+        -:   58:        // vertices not yet processed
+        3:   59:        int u = findminDistance(dist, included, V);
+        -:   60:
+        -:   61:        // Mark the selected vertex as included
+        3:   62:        included[u] = 1;
+        -:   63:
+        -:   64:        // Update the distance of all the adjacent vertices
+        -:   65:        // of the selected vertex
+       15:   66:        for (int v = 0; v < V; v++) {
+        -:   67:            // Skip non-existent edges (represented by INT_MAX)
+       12:   68:            if (!included[v] && graph[u][v] != INT_MAX && dist[u] != INT_MAX
+        3:   69:                && dist[u] + graph[u][v] < dist[v]) {
+        2:   70:                dist[v] = dist[u] + graph[u][v];
+        -:   71:            }
+        -:   72:        }
+        -:   73:    }
+        -:   74:
+        -:   75:    // Print the constructed distance array
+        1:   76:    printSolution(dist, V);
+        1:   77:}
+        -:   78:
+        1:   79:int main() {
+        -:   80:    int V, E;
+        -:   81:
+        2:   82:    for (;;) { // Infinite loop for accepting new graphs dynamically
+        3:   83:        printf("-- Dijkstra's Algorithm --\n");
+        3:   84:        printf("Enter the number of vertices: ");
+        3:   85:        scanf("%d", &V);
+        -:   86:
+        3:   87:        if (V <= 0) {
+        1:   88:            printf("Invalid number of vertices.\n");
+        2:   89:            continue;
+        -:   90:        }
+        -:   91:
+        -:   92:        // Dynamically allocate memory for the graph
+        2:   93:        int **graph = (int **)malloc(V * sizeof(int *));
+       10:   94:        for (int i = 0; i < V; i++) {
+        8:   95:            graph[i] = (int *)malloc(V * sizeof(int));
+        -:   96:        }
+        -:   97:
+        -:   98:        // Initialize the graph to INT_MAX (no edge) and diagonal to 0
+       10:   99:        for (int i = 0; i < V; i++) {
+       40:  100:            for (int j = 0; j < V; j++) {
+       32:  101:                if (i == j) {
+        8:  102:                    graph[i][j] = 0; // Distance to self is 0
+        -:  103:                } else {
+       24:  104:                    graph[i][j] = INT_MAX; // No edge
+        -:  105:                }
+        -:  106:            }
+        -:  107:        }
+        -:  108:
+        2:  109:        printf("Enter the number of edges: ");
+        2:  110:        scanf("%d", &E);
+        -:  111:
+        -:  112:        // Clear the input buffer
+        2:  113:        while (getchar() != '\n');
+        -:  114:
+        2:  115:        if (E < 0 || E > V * (V - 1) / 2) { // Validate number of edges
+        1:  116:            printf("Invalid number of edges.\n");
+        5:  117:            for (int i = 0; i < V; i++) free(graph[i]);
+        1:  118:            free(graph);
+        1:  119:            continue;
+        -:  120:        }
+        -:  121:
+        1:  122:        if (E != 0) printf("Enter the edges in the format: src dest weight\n");
+        9:  123:        for (int i = 0; i < E; i++) {
+        -:  124:            int src, dest, weight;
+        -:  125:
+        -:  126:            // Read the edge input in format of (src dest weight)
+        8:  127:            if (scanf("%d %d %d", &src, &dest, &weight) != 3) {
+        1:  128:                printf("Invalid input format. Enter exactly three integers separated by spaces (src dest weight).\n");
+        3:  129:                while (getchar() != '\n'); // Clear the buffer
+        1:  130:                i--; // Request input for this edge again
+        5:  131:                continue;
+        -:  132:            }
+        -:  133:
+        7:  134:            if (src < 0 || src >= V || dest < 0 || dest >= V || src == dest || weight < 0) {
+        3:  135:                printf("Invalid edge (self-loop, out of range or negative weight), try again.\n");
+        3:  136:                i--; // Request input for this edge again
+        3:  137:                continue;
+        -:  138:            }
+        -:  139:
+        4:  140:            if (graph[src][dest] != INT_MAX) {
+        1:  141:                printf("Edge already exists, pick another combination of vertices.\n");
+        1:  142:                i--; // Request input for this edge again
+        1:  143:                continue;
+        -:  144:            }
+        -:  145:
+        3:  146:            graph[src][dest] = weight;
+        3:  147:            graph[dest][src] = weight; // Assuming the graph is undirected
+        -:  148:        }
+        -:  149:
+        -:  150:        int src;
+        1:  151:        printf("Enter the source vertex: ");
+        1:  152:        scanf("%d", &src);
+        -:  153:
+        2:  154:        while (src < 0 || src >= V) {
+        1:  155:            printf("Invalid source vertex.\n");
+        1:  156:            printf("Enter the source vertex: ");
+        1:  157:            scanf("%d", &src);
+        -:  158:        }
+        -:  159:
+        1:  160:        DijkstrasAlgo(graph, src, V);
+        -:  161:
+        -:  162:        // Free dynamically allocated memory
+        5:  163:        for (int i = 0; i < V; i++) free(graph[i]);
+        1:  164:        free(graph);
+        -:  165:
+        -:  166:        char choice;
+        1:  167:        printf("\nYou are about to create a new graph. Enter '0' if you want to stop the running of the script or enter something else to continue: ");
+        1:  168:        scanf(" %c", &choice);
+        1:  169:        if (choice == '0') {
+        1:  170:            break;
+        -:  171:        }
+        -:  172:    }
+        -:  173:
+        1:  174:    return 0;
+        -:  175:}

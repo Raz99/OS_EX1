@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS = -Wall -fprofile-arcs -ftest-coverage -g
+CFLAGS = -g -Wall -fprofile-arcs -ftest-coverage
 TARGET = dijkstra
 
-.PHONY: all clean
+.PHONY: all clean coverage run
 
 all: $(TARGET)
 
@@ -10,7 +10,7 @@ $(TARGET): dijkstra.o
 	$(CC) $(CFLAGS) -o $@ $<
 
 dijkstra.o: dijkstra.c
-	$(CC) $(CFLAGS) -c dijkstra.c -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run:
 	./$(TARGET)

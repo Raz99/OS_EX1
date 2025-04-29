@@ -28,9 +28,9 @@ void printSolution(int dist[], int V) {
     for (int i = 0; i < V; i++) {
         if (dist[i] == INT_MAX) {
             printf("%d \t\t INF\n", i);
-            continue;
+        } else {
+            printf("%d \t\t %d\n", i, dist[i]);
         }
-        else printf("%d \t\t %d\n", i, dist[i]);
     }
 }
 
@@ -64,11 +64,8 @@ void DijkstrasAlgo(int **graph, int src, int V) {
         // Update the distance of all the adjacent vertices
         // of the selected vertex
         for (int v = 0; v < V; v++) {
-            // update dist[v] if it is not already included,
-            // and the current distance is less than its
-            // original distance
-            if (!included[v] && graph[u][v]
-                && dist[u] != INT_MAX
+            // Skip non-existent edges (represented by INT_MAX)
+            if (!included[v] && graph[u][v] != INT_MAX && dist[u] != INT_MAX
                 && dist[u] + graph[u][v] < dist[v]) {
                 dist[v] = dist[u] + graph[u][v];
             }
@@ -98,10 +95,14 @@ int main() {
             graph[i] = (int *)malloc(V * sizeof(int));
         }
 
-        // Reset the graph to zero
+        // Initialize the graph to INT_MAX (no edge) and diagonal to 0
         for (int i = 0; i < V; i++) {
             for (int j = 0; j < V; j++) {
-                graph[i][j] = 0;
+                if (i == j) {
+                    graph[i][j] = 0; // Distance to self is 0
+                } else {
+                    graph[i][j] = INT_MAX; // No edge
+                }
             }
         }
 
@@ -118,7 +119,7 @@ int main() {
             continue;
         }
 
-        if(E != 0) printf("Enter the edges in the format: src dest weight\n");
+        if (E != 0) printf("Enter the edges in the format: src dest weight\n");
         for (int i = 0; i < E; i++) {
             int src, dest, weight;
 
@@ -136,19 +137,24 @@ int main() {
                 continue;
             }
 
+            if (graph[src][dest] != INT_MAX) {
+                printf("Edge already exists, pick another combination of vertices.\n");
+                i--; // Request input for this edge again
+                continue;
+            }
+
             graph[src][dest] = weight;
-            graph[dest][src] = weight; // If the graph is undirected
+            graph[dest][src] = weight; // Assuming the graph is undirected
         }
 
         int src;
         printf("Enter the source vertex: ");
         scanf("%d", &src);
 
-        if (src < 0 || src >= V) {
+        while (src < 0 || src >= V) {
             printf("Invalid source vertex.\n");
-            for (int i = 0; i < V; i++) free(graph[i]);
-            free(graph);
-            continue;
+            printf("Enter the source vertex: ");
+            scanf("%d", &src);
         }
 
         DijkstrasAlgo(graph, src, V);
@@ -158,7 +164,7 @@ int main() {
         free(graph);
 
         char choice;
-        printf("\nYou are about to create a new graph. Enter '0' if you want to stop the running of the script or enter something else to continue:\n");
+        printf("\nYou are about to create a new graph. Enter '0' if you want to stop the running of the script or enter something else to continue: ");
         scanf(" %c", &choice);
         if (choice == '0') {
             break;
